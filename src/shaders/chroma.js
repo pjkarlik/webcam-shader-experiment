@@ -121,7 +121,7 @@ void main(){
 
     vec2 p = mod(F.xy/size, 1.) - 0.5;
     if(u_style==0.) p = mod(F.xy/size, 2.) - vec2(1);
-    vec3 hue = u_mode==1.? col =mix(vec3(gray),col,u_sat): hsv(vec3(u_hue,u_sat,.65));
+    vec3 hue = u_mode==1.? col =mix(vec3(gray),col,u_sat): hsv(vec3(u_hue+gray,u_sat,.65));
     col = hue*character(n, p);
     fragColor = vec4(col, 1);
 }`;
