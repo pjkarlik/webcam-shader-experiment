@@ -33,14 +33,22 @@ navigator.mediaDevices
 
 const settings = {
   mode: "color",
-  hue: 0.25,
-  saturation: 0.75,
-  size: 6,
+  style: "glitch",
+  hue: 2.25,
+  saturation: 0.99,
+  size: 5
 };
 const gui = new dat.GUI();
-gui.add(settings, "mode", { Color: "color", Monochrome: "mono" });
-gui.add(settings, "hue", 0, 1).step(0.001);
-gui.add(settings, "saturation", 0, 1).step(0.001);
+gui.add(settings, "style", {
+  Glitch: "glitch",
+  Hash: "hash",
+  Hearts: "hearts",
+  ASCII: "ascii"
+});
+gui.add(settings, "mode", { Color: "color", Hue: "hue" });
+gui.add(settings, "hue", 0, 3.14).step(0.01);
+
+gui.add(settings, "saturation", 0, 1).step(0.01);
 gui.add(settings, "size", 2, 24).step(1);
 
 let viewWidth = window.innerWidth;
@@ -100,16 +108,18 @@ function render(time) {
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
   const colorMode = settings.mode == "color" ? 1 : 0;
+  const styleMode =
+    settings.style == "glitch" ? 1 : settings.style == "hearts" ? 2 : settings.style == "hash" ? 3 : 0;
   const chromaUniforms = {
-    u_time: time * 0.5,
+    u_time: time,
     u_mode: colorMode,
     u_hue: settings.hue,
-    u_sat: settings.saturation,
     u_size: settings.size,
+    u_style: styleMode,
+    u_sat: settings.saturation,
     u_video: textures.u_video,
-    u_resolution: [viewWidth, viewHeight],
+    u_resolution: [viewWidth, viewHeight]
   };
-
   gl.useProgram(chromaInfo.program);
   twgl.setBuffersAndAttributes(gl, chromaInfo, fbufferInfo);
   twgl.setUniforms(chromaInfo, chromaUniforms);
